@@ -30,7 +30,7 @@ public class BuildingSelector : MonoBehaviour
     [SerializeField] Tile redTile;
 
     [SerializeField] private LayerMask buildingLayer;
-    public GameObject currentMouseOverObj;
+    public GameObject currentValuesUIBuilding;
 
     private void Awake()
     {
@@ -95,56 +95,17 @@ public class BuildingSelector : MonoBehaviour
                 {
                     canPlaceCurrentTile = true;
                 }
+
+                PlayerUI.Instance.DrawRangeCicrle(buildingPosition, currentBuilding.GetComponent<Building>().buildingObj);
             }
-
-            //Vector3Int tilePosi = unUsedTileMap.WorldToCell(buildingPosition);
-            //TileBase tileOnMousePosition = unUsedTileMap.GetTile(tilePosi);
-            //if(currentTile != unUsedTileMap.WorldToCell(buildingPosition))
-            //{
-            //    if (unUsedTileMap.GetTile(currentTile) == greenTile)
-            //    {
-            //        if (currentTile != null) unUsedTileMap.SetTile(currentTile, whiteTile);
-            //    }
-            //    currentTile = tilePosi;
-            //    if (tileOnMousePosition == whiteTile)
-            //    {
-            //        unUsedTileMap.SetTile(tilePosi, greenTile);
-            //    }
-
-            //}
 
             if (controls.Player.PlaceBuilding.WasPerformedThisFrame())
             {
-                Building building = currentBuilding.GetComponent<Building>();
-                if (canPlaceCurrentTile && EventSystem.current.IsPointerOverGameObject() == false && PlayerUI.Instance.ressourceManager.CheckForMoney(building.buildingObj.Costs))
-                {
-                    int counter = 0;
-                    BoundsInt bounds = new BoundsInt(new Vector3Int(currentTile.x, currentTile.y, 0), size: new Vector3Int(currentBuildingSize.x, currentBuildingSize.y, 1));
-                    foreach (var position in bounds.allPositionsWithin)
-                    {
-                        Vector3Int tile = new Vector3Int(position.x, position.y);
-                        TileBase test = unUsedTileMap.GetTile(tile);
-                        unUsedTileMap.SetTile(tile, redTile);                       
-                        currentColoredTiles.Add(tile);
-                        counter++;
-                    }
-                    //unUsedTileMap.SetTile(tilePosi, redTile);
-
-                    PlayerUI.Instance.ressourceManager.ChangeMoneyCount(-building.buildingObj.Costs);
-                    building.isBuild = true;
-
-                    unUsedTileMap.gameObject.SetActive(false);
-                    currentBuilding = null;
-                    creatingBuilding = false;
-                }
+                PlaceBuilding();
             }
 
             if (controls.Menu.CloseMenu.WasPerformedThisFrame() || controls.Player.CancelBuilding.WasPerformedThisFrame())
             {
-                //if (unUsedTileMap.GetTile(currentTile) == greenTile)
-                //{
-                //    //if (currentTile != null) unUsedTileMap.SetTile(currentTile, whiteTile);
-                //}
                 CloseBuildingMenu();
             }
         }
@@ -152,35 +113,70 @@ public class BuildingSelector : MonoBehaviour
         {
             if (controls.Menu.CloseMenu.WasPerformedThisFrame())
             {
-                currentMouseOverObj = null;
+                currentValuesUIBuilding = null;
                 PlayerUI.Instance.CloseBuildingValues();
             }
 
-            if (EventSystem.current.IsPointerOverGameObject()) return;
-
-            Vector2 ray = mainCam.ScreenToWorldPoint(Input.mousePosition);
-            RaycastHit2D hit = Physics2D.Raycast(ray, ray, Mathf.Infinity, buildingLayer);
-            if (hit.collider != null)
+            CheckForBuildingValues();
+        }
+    }
+    private void PlaceBuilding()
+    {
+        Building building = currentBuilding.GetComponent<Building>();
+        if (canPlaceCurrentTile && EventSystem.current.IsPointerOverGameObject() == false && PlayerUI.Instance.ressourceManager.CheckForMoney(building.buildingObj.Costs))
+        {
+            int counter = 0;
+            BoundsInt bounds = new BoundsInt(new Vector3Int(currentTile.x, currentTile.y, 0), size: new Vector3Int(currentBuildingSize.x, currentBuildingSize.y, 1));
+            foreach (var position in bounds.allPositionsWithin)
             {
-                currentMouseOverObj = hit.collider.gameObject;
-                if (controls.Menu.SelectBuilding.WasPerformedThisFrame() && currentMouseOverObj.GetComponent<Building>().isBuild)
-                {
-                    PlayerUI.Instance.ActivateBuildingValues(currentMouseOverObj);
-                }
+                Vector3Int tile = new Vector3Int(position.x, position.y);
+                TileBase test = unUsedTileMap.GetTile(tile);
+                unUsedTileMap.SetTile(tile, redTile);
+                currentColoredTiles.Add(tile);
+                counter++;
             }
-            //else
-            //{
-            //    currentMouseOverObj = null;
-            //}
+            //unUsedTileMap.SetTile(tilePosi, redTile);
+
+            PlayerUI.Instance.ressourceManager.ChangeMoneyCount(-building.buildingObj.Costs);
+            building.isBuild = true;
+            building.OnBuild();
+
+            if (PlayerUI.Instance.buildingValuesObj.activeSelf)
+            {
+                PlayerUI.Instance.ActivateBuildingValues(currentBuilding);
+            }
+            else
+            {
+                PlayerUI.Instance.DisableRangeCircle();
+            }
+
+            unUsedTileMap.gameObject.SetActive(false);
+            currentBuilding = null;
+            creatingBuilding = false;
+        }
+    }
+    private void CheckForBuildingValues()
+    {
+        if (EventSystem.current.IsPointerOverGameObject()) return;
+
+        Vector2 ray = mainCam.ScreenToWorldPoint(Input.mousePosition);
+        RaycastHit2D hit = Physics2D.Raycast(ray, ray, Mathf.Infinity, buildingLayer);
+        if (hit.collider != null)
+        {
+            if (controls.Menu.SelectBuilding.WasPerformedThisFrame() && hit.collider.gameObject.GetComponentInParent<Building>().isBuild)
+            {
+                currentValuesUIBuilding = hit.collider.transform.parent.gameObject;
+                PlayerUI.Instance.ActivateBuildingValues(currentValuesUIBuilding);
+            }
         }
     }
     public void SellTower()
     {
-        if (currentMouseOverObj != null)
+        if (currentValuesUIBuilding != null)
         {
-            BuildingObj obj = currentMouseOverObj.GetComponent<Building>().buildingObj;
+            BuildingObj obj = currentValuesUIBuilding.GetComponent<Building>().buildingObj;
 
-            Vector3Int tilePosition = unUsedTileMap.WorldToCell(currentMouseOverObj.transform.position);
+            Vector3Int tilePosition = unUsedTileMap.WorldToCell(currentValuesUIBuilding.transform.position);
 
             currentTile = tilePosition;
             int counter = 0;
@@ -201,8 +197,8 @@ public class BuildingSelector : MonoBehaviour
 
             PlayerUI.Instance.ressourceManager.ChangeMoneyCount(obj.Costs);
 
-            Destroy(currentMouseOverObj);
-            currentMouseOverObj = null;
+            Destroy(currentValuesUIBuilding);
+            currentValuesUIBuilding = null;
             PlayerUI.Instance.CloseBuildingValues();
         }
     }
@@ -215,6 +211,7 @@ public class BuildingSelector : MonoBehaviour
         Destroy(currentBuilding);
 
         PlayerUI.Instance.CloseBuildingMenu();
+        PlayerUI.Instance.ResetRangeCircle();
     }
     private void ResetTiles()
     {

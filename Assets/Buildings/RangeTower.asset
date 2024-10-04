@@ -15,8 +15,18 @@ MonoBehaviour:
   BuildingName: Range Tower
   ID: 1
   Costs: 5
-  prefab: {fileID: 6986760468539279710, guid: c795f8d6129a4d549bcf993e2285dd50, type: 3}
+  prefab: {fileID: 3884388050800224130, guid: 0ce6411a40c28e64f8684b11c29ddcad, type: 3}
   buildingSize: {x: 1, y: 1, z: 1}
-  damage: 1
-  attackSpeed: 1
-  range: 700
+  projectilePrefab: {fileID: 327718031828001098, guid: 50592a4187bdf604b8ad58d57f676e40, type: 3}
+  projectileSprite: {fileID: 21300000, guid: 3b3dce4289fc8cf4b93a1cc24cd031aa, type: 3}
+  attackDamage: 4
+  attackSpeed: 2
+  attackRange: 600
+  attackTargetType: 0
+  shotCount: 0
+  dealAoeDamage: 1
+  ontargetAoeSize: 300
+  groundAoeSize: 0
+  aoeDamageReduction: 0.5
+  attackType: 0
+  upgrades: []

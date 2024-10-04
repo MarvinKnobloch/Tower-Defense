@@ -15,8 +15,19 @@ MonoBehaviour:
   BuildingName: Big Tower
   ID: 2
   Costs: 10
-  prefab: {fileID: 2327898051179300595, guid: d52048e1cc7c2054b87b7db0f9ae84a5, type: 3}
+  prefab: {fileID: 3884388050800224130, guid: ef8f97cbfb07fd04c8b1025c7f30f5cd, type: 3}
   buildingSize: {x: 2, y: 2, z: 1}
-  damage: 10
+  projectilePrefab: {fileID: 327718031828001098, guid: 50592a4187bdf604b8ad58d57f676e40, type: 3}
+  projectileSprite: {fileID: 21300000, guid: 3b3dce4289fc8cf4b93a1cc24cd031aa, type: 3}
+  attackDamage: 2
   attackSpeed: 1
-  range: 400
+  attackRange: 350
+  attackTargetType: 3
+  shotCount: 0
+  dealAoeDamage: 0
+  ontargetAoeSize: 0
+  groundAoeSize: 100
+  aoeDamageReduction: 1
+  attackType: 2
+  upgrades:
+  - {fileID: 11400000, guid: cfdacee3d8839cd4cb5a671889a3abc4, type: 2}

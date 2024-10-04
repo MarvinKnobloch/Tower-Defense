@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class BuildingButton : MonoBehaviour
+public class BuildingButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     public BuildingObj buildingObj;
 
@@ -43,5 +44,17 @@ public class BuildingButton : MonoBehaviour
             canAffordBuilding = false;
             buttonImage.color = Color.red;
         }
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        PlayerUI.Instance.hoverOverBuildingSelector = true;
+        PlayerUI.Instance.ActivateBuildingTab(buildingObj);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        PlayerUI.Instance.CloseBuildingTab();
+        PlayerUI.Instance.hoverOverBuildingSelector = false;
     }
 }
