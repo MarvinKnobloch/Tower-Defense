@@ -19,6 +19,9 @@ public class LevelManager : MonoBehaviour
     [Space]
     [SerializeField] private int enemiesAlive;
     [SerializeField] private int activeSpawners;
+
+    [Space]
+    [SerializeField] private GameObject endingScreen;
     private void Awake()
     {
         if(Instance == null)
@@ -102,6 +105,14 @@ public class LevelManager : MonoBehaviour
             {
                 StartCoroutine(WaitForNextRound(timeBetweenLevels));
             }
+            else
+            {
+                EndGame();
+            }
         }
+    }
+    private void EndGame()
+    {
+        PlayerUI.Instance.ActivateGameOverScreen();
     }
 }

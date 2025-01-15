@@ -80,6 +80,7 @@ public class Enemy : MonoBehaviour
 
         if(currenthealth <= 0)
         {
+            PlayerUI.Instance.scoreManager.ScoreUpdate(1);
             OnDeath();
         }
     }

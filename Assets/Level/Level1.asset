@@ -15,6 +15,6 @@ MonoBehaviour:
   levelNumber: 1
   levelEnemyValues:
   - enemy: {fileID: 6799292085907753021, guid: b506750851a4aa645ab44b18f7b22d80, type: 3}
-    amount: 30
+    amount: 6
     spawnRate: 0.3
   levelScaling: 0

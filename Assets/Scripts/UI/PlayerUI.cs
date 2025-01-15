@@ -7,9 +7,6 @@ public class PlayerUI : MonoBehaviour
 {
     public static PlayerUI Instance;
 
-    public RessourceManager ressourceManager;
-
-    [Space]
     [SerializeField] private GameObject buildingMenu;
     [SerializeField] private GameObject buildingMenuButton;
 
@@ -29,6 +26,18 @@ public class PlayerUI : MonoBehaviour
 
     [Space]
     public GameObject levelTimer;
+
+    [Space]
+    public RessourceManager ressourceManager;
+
+    [Space]
+    public ScoreManager scoreManager;
+
+    [Space]
+    public LeaderboardController leaderboardController;
+
+    [Space]
+    public GameObject GameOverManager;
 
     private void Awake()
     {
@@ -138,5 +147,13 @@ public class PlayerUI : MonoBehaviour
     public void CloseBuildingTab()
     {
         buildingTab.SetActive(false);
+    }
+    public void ActivateGameOverScreen()
+    {
+        CloseBuildingMenu();
+        CloseBuildingValues();
+        Time.timeScale = 0;
+        GameOverManager.SetActive(true);
+        GameOverManager.GetComponent<GameOver>().SetGameoverScreen(scoreManager.currentScore);
     }
 }

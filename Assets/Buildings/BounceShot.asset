@@ -22,7 +22,7 @@ MonoBehaviour:
   attackDamage: 2
   attackSpeed: 1.5
   attackRange: 300
-  attackTargetType: 0
+  attackTargetType: 2
   shotCount: 2
   dealAoeDamage: 0
   ontargetAoeSize: 0
